@@ -14,9 +14,15 @@ class Github:
 
 
 @dataclasses.dataclass
+class Server:
+    service_name: str
+
+
+@dataclasses.dataclass
 class Config:
     db: Db
     github: Github
+    server: Server
 
 
 def make_config_obj(cfg_file: str):

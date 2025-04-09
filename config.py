@@ -9,8 +9,14 @@ class Db:
 
 
 @dataclasses.dataclass
+class Github:
+    webhook_secret: str
+
+
+@dataclasses.dataclass
 class Config:
     db: Db
+    github: Github
 
 
 def make_config_obj(cfg_file: str):

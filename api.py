@@ -12,6 +12,7 @@ from functools import partial
 
 import config
 import db
+import github
 import measurement
 import utils
 
@@ -22,7 +23,7 @@ logger.root.setLevel(logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
 
 
-def create_falcon_app(db_url: str):
+def create_falcon_app(db_url: str, webhook_secret: str):
     db_session = db.create_session(db_url)
     app = falcon.App(middleware=[db.DBMiddleware(db_session)])
 
@@ -34,6 +35,7 @@ def create_falcon_app(db_url: str):
     app.req_options.media_handlers.update(extra_handlers)
     app.resp_options.media_handlers.update(extra_handlers)
     app.add_route("/measurement", measurement.MeasurementRoutes())
+    app.add_route("/github/webhook", github.GithubRoutes(webhook_secret))
 
     return app
 
@@ -51,7 +53,7 @@ def main():
     prod = parsed_args.productive
     cfg = config.make_config_obj(parsed_args.cfg)
 
-    app = create_falcon_app(cfg.db.db_url)
+    app = create_falcon_app(cfg.db.db_url, cfg.github.webhook_secret)
 
     if prod:
         logger.info("RUNING IN PRODUCTION")

@@ -8,8 +8,10 @@ class MeasurementRoutes:
         return {
             "id": measurement.id,
             "type": measurement.type,
+            "measure_date": measurement.measure_date,
             "measurement": measurement.measurement(),
-            "meta": measurement.meta()
+            "meta": measurement.meta(),
+            "ref": measurement.ref(),
         }
 
     def on_get(self, req, resp):

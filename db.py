@@ -18,22 +18,13 @@ class MeasurementEntry(Base):
     type = mapped_column("type", String, nullable=False)
     measure_date = mapped_column(
                 "measure_date",
-                DateTime(timezone=True),
+                String, #Storing it as a string since the DateTime with timezone is not supported by SQLite
                 server_default=datetime.now(timezone.utc).isoformat(),
                 nullable=False
             )
     _measurement = mapped_column("measurement", JSON, server_default='{}')
     _meta = mapped_column("meta", JSON, server_default='{}')
     _ref = mapped_column("ref", JSON, server_default='{}')
-
-    def measurement(self):
-        return json.loads(self._measurement)
-
-    def meta(self):
-        return json.loads(self._meta)
-
-    def ref(self):
-        return json.loads(self._ref)
 
 
 def create_session(db_url):

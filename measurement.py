@@ -9,9 +9,9 @@ class MeasurementRoutes:
             "id": measurement.id,
             "type": measurement.type,
             "measure_date": measurement.measure_date,
-            "measurement": measurement.measurement(),
-            "meta": measurement.meta(),
-            "ref": measurement.ref(),
+            "measurement": measurement._measurement,
+            "meta": measurement._meta,
+            "ref": measurement._ref,
         }
 
     def on_get(self, req, resp):

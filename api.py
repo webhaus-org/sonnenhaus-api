@@ -23,8 +23,8 @@ logger.root.setLevel(logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
 
 
-def create_falcon_app(db_url: str, webhook_secret: str, service_name: str):
-    db_session = db.create_session(db_url)
+def create_falcon_app(cfg: config.Config):
+    db_session = db.create_session(cfg.db.db_url)
     app = falcon.App(middleware=[db.DBMiddleware(db_session)])
 
     json_handler = falcon.media.JSONHandler(
@@ -35,7 +35,7 @@ def create_falcon_app(db_url: str, webhook_secret: str, service_name: str):
     app.req_options.media_handlers.update(extra_handlers)
     app.resp_options.media_handlers.update(extra_handlers)
     app.add_route("/measurement", measurement.MeasurementRoutes())
-    app.add_route("/github/webhook", github.GithubRoutes(webhook_secret, service_name))
+    app.add_route("/github/webhook", github.GithubRoutes(cfg.github.webhook_secret, cfg.server.service_name))
 
     return app
 
@@ -53,7 +53,7 @@ def main():
     prod = parsed_args.productive
     cfg = config.make_config_obj(parsed_args.cfg)
 
-    app = create_falcon_app(cfg.db.db_url, cfg.github.webhook_secret, cfg.server.service_name)
+    app = create_falcon_app(cfg)
 
     if prod:
         logger.info("RUNING IN PRODUCTION")

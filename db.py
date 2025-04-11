@@ -1,10 +1,10 @@
 import json
 import sqlalchemy.orm
+import time
 
-from datetime import datetime, timezone
 from sqlalchemy import create_engine
 from sqlalchemy.orm import mapped_column
-from sqlalchemy.types import DateTime, Integer, JSON, String
+from sqlalchemy.types import Integer, JSON, String
 
 
 class Base(sqlalchemy.orm.DeclarativeBase):
@@ -12,19 +12,19 @@ class Base(sqlalchemy.orm.DeclarativeBase):
 
 
 class MeasurementEntry(Base):
-    __tablename__ = "measurement_entry"
+    __tablename__ = "measurement"
 
     id = mapped_column("id", Integer, primary_key=True, autoincrement=True)
     type = mapped_column("type", String, nullable=False)
     measure_date = mapped_column(
                 "measure_date",
-                String, #Storing it as a string since the DateTime with timezone is not supported by SQLite
-                server_default=datetime.now(timezone.utc).isoformat(),
+                Integer,
+                server_default=f"{int(time.time())}",
                 nullable=False
             )
-    _measurement = mapped_column("measurement", JSON, server_default='{}')
-    _meta = mapped_column("meta", JSON, server_default='{}')
-    _ref = mapped_column("ref", JSON, server_default='{}')
+    data = mapped_column("data", JSON, server_default="{}")
+    meta = mapped_column("meta", JSON, server_default="{}")
+    ref = mapped_column("ref", JSON, server_default="{}")
 
 
 def create_session(db_url):

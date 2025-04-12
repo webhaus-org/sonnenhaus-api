@@ -12,10 +12,10 @@ class GithubRoutes:
 
     def on_post(self, req: falcon.Request, resp: falcon.Response):
         hub_signature = req.get_header(
-                "x-hub-signature-256",
-                required=True,
-                default="x-hub-signature-256 is missing"
-                )
+            "x-hub-signature-256",
+            required=True,
+            default="x-hub-signature-256 is missing"
+        )
 
         with req.bounded_stream as rs:
             raw_body = rs.read()
@@ -23,8 +23,8 @@ class GithubRoutes:
         expected_signature = f"sha256={digest.hexdigest()}"
         if not hmac.compare_digest(expected_signature, hub_signature):
             raise falcon.HTTPBadRequest(
-                    title="Signature unmatched",
-                    description="Calculated and provided signature didn't match"
-                    )
+                title="Signature unmatched",
+                description="Calculated and provided signature didn't match"
+            )
         path = os.path.dirname(os.path.realpath(__file__))
         subprocess.Popen(["sh", f"{path}/update_api.sh", path, self.service_name])

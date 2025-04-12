@@ -17,7 +17,7 @@ class MeasurementRoutes:
             "type": measurement.type,
             "measure_date": measurement.measure_date,
             "data": measurement.data,
-            "meta": measurement.data,
+            "meta": measurement.meta,
             "ref": measurement.ref,
         }
 

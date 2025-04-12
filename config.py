@@ -19,10 +19,21 @@ class Server:
 
 
 @dataclasses.dataclass
+class MeasurementValidation:
+    path_to_public_key: str
+
+
+@dataclasses.dataclass
+class Measurement:
+    validation: MeasurementValidation
+
+
+@dataclasses.dataclass
 class Config:
     db: Db
     github: Github
     server: Server
+    measurement: Measurement
 
 
 def make_config_obj(cfg_file: str):

@@ -34,8 +34,14 @@ def create_falcon_app(cfg: config.Config):
     extra_handlers = {"application/json": json_handler}
     app.req_options.media_handlers.update(extra_handlers)
     app.resp_options.media_handlers.update(extra_handlers)
-    app.add_route("/measurement", measurement.MeasurementRoutes())
-    app.add_route("/github/webhook", github.GithubRoutes(cfg.github.webhook_secret, cfg.server.service_name))
+    app.add_route(
+        "/measurement",
+        measurement.MeasurementRoutes(cfg.measurement.validation.path_to_public_key),
+    )
+    app.add_route(
+        "/github/webhook",
+        github.GithubRoutes(cfg.github.webhook_secret, cfg.server.service_name),
+    )
 
     return app
 
@@ -57,6 +63,7 @@ def main():
 
     if prod:
         logger.info("RUNING IN PRODUCTION")
+
         def serve():
             bjoern.run(app, "localhost", port, reuse_port=True)
 

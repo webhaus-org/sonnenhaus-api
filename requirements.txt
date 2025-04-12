@@ -1,4 +1,5 @@
 bjoern==3.2.2
+cryptography==44.0.2
 dacite==1.9.2
 falcon==4.0.2
 SQLAlchemy==2.0.40

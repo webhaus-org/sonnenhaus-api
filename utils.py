@@ -16,7 +16,7 @@ def json_serialize(obj):
 
 
 def validate_payload(public_key: bytes, req):
-    _public_key = ed25519.Ed25519PublicKey().from_public_bytes(public_key)
+    _public_key = ed25519.Ed25519PublicKey.from_public_bytes(public_key)
     signature_head = req.get_header(
         "x-measurement-signature",
         required=True,

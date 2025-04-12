@@ -1,5 +1,14 @@
-#! /bin/bash
+#! /usr/bin/env bash
 
-cd $1
-git pull origin master --rebase
-sudo systemctl restart $2
+own_dir="$(dirname "${BASH_SOURCE[0]}")"
+
+# usage:
+# update_api.sh <systemd-unit-name>
+
+set -euo pipefail
+
+git \
+  -C "${own_dir}" \
+  pull origin master --rebase
+
+sudo systemctl restart "${1}"

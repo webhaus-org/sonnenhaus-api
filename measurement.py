@@ -23,9 +23,12 @@ class MeasurementRoutes:
 
     def on_get(self, req, resp):
         session = req.context.db_session
+        query_params = req.params
+        limit = query_params.get("limit", 60*24)
         measurement_entries = (
             session.query(MeasurementEntry)
             .order_by(MeasurementEntry.measure_date.desc())
+            .limit(limit)
             .all()
         )
         resp.media = [self._to_dict(entry) for entry in measurement_entries]

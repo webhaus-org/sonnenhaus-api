@@ -17,11 +17,11 @@ class MeasurementEntry(Base):
     id = mapped_column("id", Integer, primary_key=True, autoincrement=True)
     type = mapped_column("type", String, nullable=False)
     measure_date = mapped_column(
-        "measure_date", Integer, server_default=f"{int(time.time())}", nullable=False
+        "measure_date", Integer, default=int(time.time()), nullable=False
     )
-    data = mapped_column("data", JSON, server_default="{}")
-    meta = mapped_column("meta", JSON, server_default="{}")
-    ref = mapped_column("ref", JSON, server_default="{}")
+    data = mapped_column("data", JSON, default={})
+    meta = mapped_column("meta", JSON, default={})
+    ref = mapped_column("ref", JSON, default={})
 
 
 def create_session(db_url):

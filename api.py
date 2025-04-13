@@ -10,6 +10,7 @@ import werkzeug
 
 from functools import partial
 
+import auth
 import config
 import db
 import measurement
@@ -55,6 +56,11 @@ def main():
     cfg = config.make_config_obj(parsed_args.cfg)
 
     app = create_falcon_app(cfg)
+
+    if cfg.server.authentication_service.authentication_provider == "firebase":
+        auth.init_firebase(cfg.server.authentication_service.path_to_authentication_provider_config)
+    else:
+        raise NotImplemented(f"{cfg.server.authentication_service.authentication_provider=} unknown")
 
     if prod:
         logger.info("RUNING IN PRODUCTION")

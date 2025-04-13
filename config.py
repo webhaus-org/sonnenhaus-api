@@ -9,8 +9,14 @@ class Db:
 
 
 @dataclasses.dataclass
+class AuthenticationService:
+    authentication_provider: str
+    path_to_authentication_provider_config: str
+
+
+@dataclasses.dataclass
 class Server:
-    pass
+    authentication_service: AuthenticationService
 
 
 @dataclasses.dataclass

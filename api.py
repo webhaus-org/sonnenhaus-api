@@ -12,7 +12,6 @@ from functools import partial
 
 import config
 import db
-import github
 import measurement
 import utils
 
@@ -37,10 +36,6 @@ def create_falcon_app(cfg: config.Config):
     app.add_route(
         "/measurement",
         measurement.MeasurementRoutes(cfg.measurement.validation.path_to_public_key),
-    )
-    app.add_route(
-        "/github/webhook",
-        github.GithubRoutes(cfg.github.webhook_secret, cfg.server.service_name),
     )
 
     return app

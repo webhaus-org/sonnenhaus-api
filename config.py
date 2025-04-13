@@ -9,13 +9,8 @@ class Db:
 
 
 @dataclasses.dataclass
-class Github:
-    webhook_secret: str
-
-
-@dataclasses.dataclass
 class Server:
-    service_name: str
+    pass
 
 
 @dataclasses.dataclass
@@ -31,7 +26,6 @@ class Measurement:
 @dataclasses.dataclass
 class Config:
     db: Db
-    github: Github
     server: Server
     measurement: Measurement
 

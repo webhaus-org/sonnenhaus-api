@@ -4,11 +4,21 @@ import time
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import mapped_column
-from sqlalchemy.types import Integer, JSON, String
+from sqlalchemy.sql import func
+from sqlalchemy.types import DateTime, Integer, JSON, String
 
 
 class Base(sqlalchemy.orm.DeclarativeBase):
     pass
+
+
+class UserEntry(Base):
+    __tablename__ = "user"
+
+    id = mapped_column("id", Integer, primary_key=True, autoincrement=True)
+    email_address = mapped_column("email_address", String, unique=True, nullable=False)
+    creation_date = mapped_column("creation_date", DateTime, server_default=func.now(), nullable=False)
+    roles = mapped_column("roles", JSON, default=[], nullable=False)
 
 
 class MeasurementEntry(Base):

@@ -12,6 +12,7 @@ from functools import partial
 
 import auth
 import config
+import cors
 import db
 import measurement
 import utils
@@ -25,7 +26,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 def create_falcon_app(cfg: config.Config):
     db_session = db.create_session(cfg.db.db_url)
-    app = falcon.App(middleware=[db.DBMiddleware(db_session)])
+    app = falcon.App(middleware=[cors.CorsMiddleware(), db.DBMiddleware(db_session)])
 
     json_handler = falcon.media.JSONHandler(
         dumps=partial(json.dumps, default=utils.json_serialize, sort_keys=True),

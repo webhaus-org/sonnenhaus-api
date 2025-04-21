@@ -1,7 +1,7 @@
 import falcon
 
+from auth import validate_permission
 from db import MeasurementEntry
-
 from utils import validate_payload
 
 
@@ -21,6 +21,7 @@ class MeasurementRoutes:
             "ref": measurement.ref,
         }
 
+    @falcon.before(validate_permission)
     def on_get(self, req, resp):
         session = req.context.db_session
         query_params = req.params

@@ -15,6 +15,7 @@ import config
 import cors
 import db
 import measurement
+import user
 import utils
 
 
@@ -38,6 +39,10 @@ def create_falcon_app(cfg: config.Config):
     app.add_route(
         "/measurement",
         measurement.MeasurementRoutes(cfg.measurement.validation.path_to_public_key),
+    )
+    app.add_route(
+        "/user",
+        user.UserRoutes(),
     )
 
     return app

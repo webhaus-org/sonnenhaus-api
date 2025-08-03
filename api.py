@@ -10,7 +10,6 @@ import werkzeug
 
 from functools import partial
 
-import auth
 import config
 import cors
 import db
@@ -18,6 +17,7 @@ import measurement
 import user
 import utils
 
+from auth import Auth
 
 logger = logging.getLogger("api")
 logger.setLevel(logging.DEBUG)
@@ -53,20 +53,24 @@ def main():
     parser.add_argument("--port", type=int, default=6543)
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--productive", type=bool, default=False)
+    parser.add_argument("--no_auth", type=bool, default=False)
     parser.add_argument("--cfg", default=None)
 
     parsed_args = parser.parse_args()
     port = parsed_args.port
     workers = parsed_args.workers
     prod = parsed_args.productive
+    no_auth = parsed_args.no_auth
     cfg = config.make_config_obj(parsed_args.cfg)
-
     app = create_falcon_app(cfg)
 
     if cfg.server.authentication_service.authentication_provider == "firebase":
-        auth.init_firebase(cfg.server.authentication_service.path_to_authentication_provider_config)
+        Auth.init_firebase(cfg.server.authentication_service.path_to_authentication_provider_config)
     else:
         raise NotImplemented(f"{cfg.server.authentication_service.authentication_provider=} unknown")
+
+    no_auth = parsed_args.no_auth
+    Auth.set_auth(not no_auth)
 
     if prod:
         logger.info("RUNING IN PRODUCTION")

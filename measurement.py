@@ -1,6 +1,6 @@
 import falcon
 
-from auth import validate_permission
+from auth import Auth
 from db import MeasurementEntry
 from utils import validate_payload
 
@@ -21,14 +21,26 @@ class MeasurementRoutes:
             "ref": measurement.ref,
         }
 
-    @falcon.before(validate_permission)
+    @falcon.before(Auth.validate_permission)
     def on_get(self, req, resp):
         session = req.context.db_session
         query_params = req.params
         limit = query_params.get("limit", 60*24)
+        min_measure_date = query_params.get("min_measure_date", None)
+        max_measure_date = query_params.get("max_measure_date", None)
+        measurement_entries = session.query(MeasurementEntry)
+
+        if min_measure_date:
+            measurement_entries = measurement_entries.filter(
+                    MeasurementEntry.measure_date >= min_measure_date
+                    )
+        if max_measure_date:
+            measurement_entries = measurement_entries.filter(
+                    MeasurementEntry.measure_date <= max_measure_date
+                    )
+
         measurement_entries = (
-            session.query(MeasurementEntry)
-            .order_by(MeasurementEntry.measure_date.desc())
+            measurement_entries.order_by(MeasurementEntry.measure_date.desc())
             .limit(limit)
             .all()
         )
@@ -51,6 +63,6 @@ class MeasurementRoutes:
             raise falcon.HTTPBadRequest(description="Missing required field")
         except ValueError:
             raise falcon.HTTPBadRequest(description="Value of wrong type")
-        except TypeError as e:
+        except TypeError:
             raise falcon.HTTPBadRequest(description="Measurement invalid")
         resp.media = self._to_dict(measurement_entry)

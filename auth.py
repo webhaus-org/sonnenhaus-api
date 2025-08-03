@@ -6,32 +6,44 @@ import enum
 from db import UserEntry
 
 
-def init_firebase(firebase_cfg: str):
-    cred = firebase_admin.credentials.Certificate(firebase_cfg)
-    firebase_admin.initialize_app(cred)
+class Auth:
+    __auth__ = True
 
+    @staticmethod
+    def set_auth(auth: bool):
+        Auth.__auth__ = auth
 
-def validate_permission(req, resp, resource, params):
-    auth_header = req.auth
-    if not auth_header:
-        raise falcon.HTTPUnauthorized()
+    @staticmethod
+    def init_firebase(firebase_cfg: str):
+        cred = firebase_admin.credentials.Certificate(firebase_cfg)
+        firebase_admin.initialize_app(cred)
 
-    if not auth_header.startswith("Bearer"):
-        raise falcon.HTTPUnauthorized()
+    @staticmethod
+    def validate_permission(req, resp, resource, params):
+        if not Auth.__auth__:
+            req.context.user = dict()
+            return
 
-    token = auth_header.removeprefix("Bearer").strip()
+        auth_header = req.auth
+        if not auth_header:
+            raise falcon.HTTPUnauthorized()
 
-    try:
-        decoded_token = firebase_admin.auth.verify_id_token(token)
-    except:
-        raise falcon.HTTPUnauthorized(description="Invalid token")
+        if not auth_header.startswith("Bearer"):
+            raise falcon.HTTPUnauthorized()
 
-    email_address = decoded_token["email"]
-    session = req.context.db_session
+        token = auth_header.removeprefix("Bearer").strip()
 
-    user = session.query(UserEntry).filter(UserEntry.email_address == email_address).first()
+        try:
+            decoded_token = firebase_admin.auth.verify_id_token(token)
+        except:
+            raise falcon.HTTPUnauthorized(description="Invalid token")
 
-    if not user:
-        raise falcon.HTTPUnauthorized(description=f"User {email_address} not found in local db.")
+        email_address = decoded_token["email"]
+        session = req.context.db_session
 
-    req.context.user = user
+        user = session.query(UserEntry).filter(UserEntry.email_address == email_address).first()
+
+        if not user:
+            raise falcon.HTTPUnauthorized(description=f"User {email_address} not found in local db.")
+
+        req.context.user = user

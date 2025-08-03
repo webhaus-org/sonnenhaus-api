@@ -1,6 +1,6 @@
 import falcon
 
-from auth import validate_permission
+from auth import Auth
 from db import UserEntry
 
 
@@ -13,11 +13,11 @@ class UserRoutes:
             "roles": user.roles
         }
 
-    @falcon.before(validate_permission)
+    @falcon.before(Auth.validate_permission)
     def on_get(self, req, resp):
         resp.media = self._to_dict(req.context.user)
 
-    @falcon.before(validate_permission)
+    @falcon.before(Auth.validate_permission)
     def on_post(self, req, resp):
         session = req.context.db_session
         user = req.get_media()

@@ -1,5 +1,5 @@
 bjoern==3.2.2
-cryptography==44.0.2
+cryptography==46.0.5
 dacite==1.9.2
 falcon==4.0.2
 firebase-admin==6.7.0

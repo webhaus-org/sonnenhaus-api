@@ -4,5 +4,5 @@ dacite==1.9.2
 falcon==4.2.0
 firebase-admin==7.3.0
 SQLAlchemy==2.0.48
-werkzeug==3.1.6
+werkzeug==3.1.8
 PyYaml==6.0.3

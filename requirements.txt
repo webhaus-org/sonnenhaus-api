@@ -5,4 +5,4 @@ falcon==4.2.0
 firebase-admin==6.7.0
 SQLAlchemy==2.0.40
 werkzeug==3.1.6
-PyYaml==6.0.2
+PyYaml==6.0.3

@@ -2,7 +2,7 @@ bjoern==3.2.2
 cryptography==46.0.7
 dacite==1.9.2
 falcon==4.2.0
-firebase-admin==7.3.0
+firebase-admin==7.4.0
 SQLAlchemy==2.0.49
 werkzeug==3.1.8
 PyYaml==6.0.3
